@@ -11,23 +11,30 @@ import {
 
 import {
   BarChart,
+  Bell,
   ChevronLeft,
   FileText,
   GraduationCap,
   LayoutDashboard,
   Settings,
+  Upload,
+  User,
   Users,
 } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { EnrollmentForm } from "./components/form";
+import { Badge } from "@/components/ui/badge";
 
 const data = {
   navMain: [
     { title: "Dashboard", value: "dashboard", icon: LayoutDashboard },
-    { title: "Estudiantes", value: "students", icon: Users },
     { title: "Matrícula", value: "enrollment", icon: GraduationCap },
-    { title: "Documentos", value: "documents", icon: FileText },
+    { title: "Estudiantes", value: "students", icon: Users },
+    { title: "Documentos", value: "documents", icon: Upload },
+    { title: "Notificaciones", value: "notifications", icon: Bell, badge: 5 },
+    { title: "Perfil", value: "profile", icon: User },
     { title: "Configuración", value: "settings", icon: Settings },
   ],
 };
@@ -45,7 +52,7 @@ export default function AdminPage() {
           </Link>
         </div>
         <Tabs
-          defaultValue="dashboard"
+          defaultValue="enrollment"
           className="w-full flex-col md:flex-row gap-3"
         >
           {/* Navigation */}
@@ -56,12 +63,17 @@ export default function AdminPage() {
                   <TabsTrigger
                     key={item.title}
                     value={item.value}
-                    className="justify-start py-[5px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-none"
+                    className="group justify-start py-[5px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-none"
                     asChild
                   >
                     <Button variant="ghost" size="sm">
                       <item.icon className="h-4 w-4" />
                       {item.title}
+                      {item.badge && (
+                        <Badge className="group-data-[state=active]:bg-background group-data-[state=active]:text-primary">
+                          {item.badge}
+                        </Badge>
+                      )}
                     </Button>
                   </TabsTrigger>
                 ))}
@@ -77,7 +89,7 @@ export default function AdminPage() {
                 <CardHeader>
                   <CardTitle>Panel de Administración</CardTitle>
                   <CardDescription>
-                    Resumen general del sistema de matrículas
+                    Aquí está el resumen de su proceso de matrícula
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -126,6 +138,10 @@ export default function AdminPage() {
               </Card>
             </TabsContent>
 
+            <TabsContent value="profile" className="mt-0">
+              <Profile />
+            </TabsContent>
+
             <TabsContent value="settings" className="mt-0">
               <Card className="shadow-none">
                 <CardHeader>
@@ -160,8 +176,24 @@ function Enrollment() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <EnrollmentForm />
+      </CardContent>
+    </Card>
+  );
+}
+
+function Profile() {
+  return (
+    <Card className="shadow-none">
+      <CardHeader className="border-dashed border-b">
+        <CardTitle>Información Personal</CardTitle>
+        <CardDescription>
+          Gestione su información personal y de contacto
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
         <div className="h-[400px] flex items-center justify-center bg-muted/20 rounded-md">
-          <p className="text-muted-foreground">Lista de documentos</p>
+          <p className="text-muted-foreground">Mi Perfil</p>
         </div>
       </CardContent>
     </Card>

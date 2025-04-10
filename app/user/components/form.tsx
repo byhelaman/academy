@@ -45,9 +45,16 @@ import {
 import { cn } from "@/lib/utils";
 import { es } from "date-fns/locale";
 import { format } from "date-fns";
-import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  AlertCircle,
+  CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
+  Terminal,
+} from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
-import { InputPassword } from "../login/components/password";
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const FormSchema = z
   .object({
@@ -105,15 +112,17 @@ const FormSchema = z
 const stepFields: Record<number, (keyof z.infer<typeof FormSchema>)[]> = {
   1: ["name", "lastname", "id", "dob", "relation"],
   2: ["address", "job", "phone", "emergency_contact"],
+  3: ["address", "job", "phone", "emergency_contact"],
 };
 
 const stepTitles: { [key: number]: string } = {
-  1: "Información Personal",
-  2: "Información de Contacto",
-  3: "Información de Acceso",
+  1: "Selección de Nivel Educativo",
+  2: "Información del Estudiante",
+  3: "Documentos Requeridos",
+  4: "Confirmación de Matrícula",
 };
 
-export function RegisterForm() {
+export function EnrollmentForm() {
   const [step, setStep] = useState(1);
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -140,12 +149,12 @@ export function RegisterForm() {
     const currentFields = stepFields[step];
     if (!currentFields) return;
 
-    if (currentFields) {
-      const isValid = await form.trigger(currentFields);
-      console.log(isValid);
+    // if (currentFields) {
+    //   const isValid = await form.trigger(currentFields);
+    //   console.log(isValid);
 
-      if (!isValid) return;
-    }
+    //   if (!isValid) return;
+    // }
 
     setStep(step + 1);
   };
@@ -160,26 +169,126 @@ export function RegisterForm() {
     });
     form.reset();
     setStep(1);
-    redirect("/register");
+    // redirect("/register");
   }
 
   return (
     <Form {...form}>
-      <Card className="shadow-none">
-        <CardHeader className="mb-2 border-b border-dashed gap-0 text-center">
-          <CardTitle className="text-xl font-bold tracking-tight">
-            Crea tu cuenta
-          </CardTitle>
-          <CardDescription>
-            Regístrate y comienza tu experiencia
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-8">
-            <span className="font-medium">{stepTitles[step] || ""}</span>
+      <Card className="shadow-none border-none p-0">
+        <CardContent className="p-0">
+          <div className={step != 3 ? "mb-8" : "mb-2"}>
+            <span className="font-semibold">{stepTitles[step] || ""}</span>
           </div>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {step === 1 && (
+              <>
+                <LevelSelector />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="relation"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Grado preferido</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Seleccione una opción" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="option1">1er Grado</SelectItem>
+                            <SelectItem value="option2">2do Grado</SelectItem>
+                            <SelectItem value="option3">3er Grado</SelectItem>
+                            <SelectItem value="option4">4to Grado</SelectItem>
+                            <SelectItem value="option5">5to Grado</SelectItem>
+                            <SelectItem value="option6">6to Grado</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="relation"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Turno preferido</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Seleccione una opción" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="option1">
+                              Mañana (07:30 - 12:30)
+                            </SelectItem>
+                            <SelectItem value="option2">
+                              Tarde (12:45 - 18:30)
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="relation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Procedencia educativa</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Seleccione una opción" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="option1">Nuevo ingreso</SelectItem>
+                          <SelectItem value="option2">
+                            Traslado de otra institución
+                          </SelectItem>
+                          <SelectItem value="option3">Reingreso</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Motivo de elección de la institución
+                        <span className="text-muted-foreground">
+                          (Opcional)
+                        </span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+            {step === 2 && (
               <>
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
@@ -187,7 +296,7 @@ export function RegisterForm() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nombres</FormLabel>
+                        <FormLabel>Nombres del Estudiante</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -200,7 +309,7 @@ export function RegisterForm() {
                     name="lastname"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Apellidos</FormLabel>
+                        <FormLabel>Apellidos del Estudiante</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -214,7 +323,9 @@ export function RegisterForm() {
                   name="id"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>DNI / Documento de Identidad</FormLabel>
+                      <FormLabel>
+                        DNI / Documento de Identidad del Estudiante
+                      </FormLabel>
                       <FormControl>
                         <Input {...field} maxLength={8} />
                       </FormControl>
@@ -251,8 +362,8 @@ export function RegisterForm() {
                           <>
                             <Calendar
                               captionLayout="dropdown-buttons"
-                              fromYear={1980}
-                              toYear={2010}
+                              fromYear={2010}
+                              toYear={2024}
                               mode="single"
                               selected={field.value ?? null}
                               onSelect={field.onChange}
@@ -270,10 +381,34 @@ export function RegisterForm() {
                   name="relation"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Relación con el Estudiante</FormLabel>
+                      <FormLabel>Genero</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Seleccione una opción" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="option1">Masculino</SelectItem>
+                          <SelectItem value="option2">Femenino</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="relation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Relación con el Estudiante</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value == null ? "option1" : field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="w-full">
@@ -289,57 +424,19 @@ export function RegisterForm() {
                     </FormItem>
                   )}
                 />
-              </>
-            )}
-            {step === 2 && (
-              <>
                 <FormField
                   control={form.control}
-                  name="address"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Dirección</FormLabel>
+                      <FormLabel>
+                        Alergias o Condiciones Médicas
+                        <span className="text-muted-foreground">
+                          (Opcional)
+                        </span>
+                      </FormLabel>
                       <FormControl>
                         <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="job"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Ocupación/profesión</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Teléfono/WhatsApp</FormLabel>
-                      <FormControl>
-                        <Input {...field} maxLength={9} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="emergency_contact"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Contacto de emergencia</FormLabel>
-                      <FormControl>
-                        <Input {...field} maxLength={9} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -349,14 +446,24 @@ export function RegisterForm() {
             )}
             {step === 3 && (
               <>
+                <Alert className="mb-8">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Información Importante</AlertTitle>
+                  <AlertDescription>
+                    Los documentos deben estar en formato PDF o imagen (JPG,
+                    PNG) y no deben exceder los 5MB.
+                  </AlertDescription>
+                </Alert>
                 <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Correo Electrónico</FormLabel>
+                      <FormLabel>
+                        DNI o Partida de Nacimiento del Estudiante
+                      </FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} type="file" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -364,12 +471,12 @@ export function RegisterForm() {
                 />
                 <FormField
                   control={form.control}
-                  name="password"
+                  name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Contraseña</FormLabel>
+                      <FormLabel>Constancia de traslado</FormLabel>
                       <FormControl>
-                        <InputPassword {...field} />
+                        <Input {...field} type="file" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -377,12 +484,51 @@ export function RegisterForm() {
                 />
                 <FormField
                   control={form.control}
-                  name="confirm_password"
+                  name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirmar Contraseña</FormLabel>
+                      <FormLabel>Fotografía reciente del estudiante</FormLabel>
                       <FormControl>
-                        <InputPassword {...field} />
+                        <Input {...field} type="file" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Libreta de notas del año anterior</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="file" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Certificado médico</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="file" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>DNI del padre, madre o tutor legal</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="file" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -390,9 +536,19 @@ export function RegisterForm() {
                 />
               </>
             )}
+            {step === 4 && (
+              <>
+                <div className="flex flex-col gap-2">
+                  <span>Información de Matrícula</span>
+                  <span>Información del Estudiante </span>
+                  <span> Información del Padre/Madre/Tutor</span>
+                  <span>Documentos Requeridos</span>
+                </div>
+              </>
+            )}
             <div
               className={`w-full flex ${
-                step > 1 && step <= 3 ? "justify-between" : "justify-end"
+                step > 1 && step <= 4 ? "justify-between" : "justify-end"
               }`}
             >
               {step > 1 ? (
@@ -409,7 +565,7 @@ export function RegisterForm() {
                 </Button>
               ) : null}
 
-              {step < 3 ? (
+              {step < 4 ? (
                 <Button
                   type="button"
                   onClick={(e) => {
@@ -428,5 +584,42 @@ export function RegisterForm() {
         </CardContent>
       </Card>
     </Form>
+  );
+}
+
+import { useId } from "react";
+import { Brush, Eraser, Scissors, SwatchBook } from "lucide-react";
+
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+export default function LevelSelector() {
+  const id = useId();
+
+  const items = [
+    { value: "1", label: "Inicial", Icon: SwatchBook },
+    { value: "2", label: "Primaria", Icon: Brush },
+    { value: "3", label: "Secundaria", Icon: Eraser },
+  ];
+
+  return (
+    <RadioGroup className="grid-cols-2 md:grid-cols-3" defaultValue="2">
+      {items.map((item) => (
+        <div
+          key={`${id}-${item.value}`}
+          className="border-input has-data-[state=checked]:border-primary/50 relative flex flex-col gap-4 rounded-md border p-4 shadow-xs outline-none"
+        >
+          <div className="flex justify-between gap-2">
+            <RadioGroupItem
+              id={`${id}-${item.value}`}
+              value={item.value}
+              className="order-1 after:absolute after:inset-0"
+            />
+            <item.Icon className="opacity-60" size={16} aria-hidden="true" />
+          </div>
+          <Label htmlFor={`${id}-${item.value}`}>{item.label}</Label>
+        </div>
+      ))}
+    </RadioGroup>
   );
 }
