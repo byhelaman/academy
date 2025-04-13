@@ -31,12 +31,14 @@ import Link from "next/link";
 import { InputPassword } from "./components/password";
 
 const FormSchema = z.object({
-  email: z.string().min(2, {
-    message: "Campo obligatorio",
-  }),
-  password: z.string().min(2, {
-    message: "Campo obligatorio",
-  }),
+  email: z
+    .string()
+    .min(1, "El correo electrónico es requerido")
+    .email("Correo electrónico inválido"),
+  password: z
+    .string()
+    .min(1, "La contraseña es requerida")
+    .max(50, "Contraseña inválida"),
 });
 
 export function LoginForm() {
@@ -58,7 +60,7 @@ export function LoginForm() {
       redirect("/admin");
     }
 
-    redirect("/dashboard");
+    redirect("/user");
   }
 
   return (

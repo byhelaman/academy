@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -49,62 +49,76 @@ import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { InputPassword } from "../login/components/password";
 
+const ERROR_MESSAGES = {
+  REQUIRED: "Campo requerido",
+  STRING_LENGTH: (min: number, max: number) =>
+    `Debe tener entre ${min} y ${max} caracteres`,
+  NUMERIC: "Solo se permiten números",
+  LETTERS: "Solo se permiten letras y espacios",
+  SELECT_OPTION: "Seleccione una opción válida",
+  DNI_LENGTH: "El DNI debe tener 8 dígitos",
+  EMAIL: "Correo electrónico inválido",
+  PASSWORD_MISMATCH: "Las contraseñas no coinciden",
+  DATE_RANGE: "Debe ser mayor de 18 años",
+  PHONE_LENGTH: "Debe tener 9 dígitos",
+};
+
+const validateDate = (date: Date) => {
+  const today = new Date();
+  const minDate = new Date(
+    today.getFullYear() - 18,
+    today.getMonth(),
+    today.getDate()
+  );
+
+  return date >= minDate;
+};
+
 const FormSchema = z
   .object({
-    name: z.string().min(2, {
-      message: "Campo obligatorio",
+    name: z
+      .string()
+      .min(2, ERROR_MESSAGES.STRING_LENGTH(2, 50))
+      .max(50, ERROR_MESSAGES.STRING_LENGTH(2, 50))
+      .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/, ERROR_MESSAGES.LETTERS),
+    lastname: z
+      .string()
+      .min(2, ERROR_MESSAGES.STRING_LENGTH(2, 50))
+      .max(50, ERROR_MESSAGES.STRING_LENGTH(2, 50))
+      .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/, ERROR_MESSAGES.LETTERS),
+    id: z
+      .string()
+      .length(8, ERROR_MESSAGES.DNI_LENGTH)
+      .regex(/^\d+$/, ERROR_MESSAGES.NUMERIC),
+    dob: z
+      .date({ message: ERROR_MESSAGES.REQUIRED })
+      .refine(validateDate, ERROR_MESSAGES.DATE_RANGE),
+    relation: z.enum(["parent", "tutor"], {
+      message: ERROR_MESSAGES.SELECT_OPTION,
     }),
-    lastname: z.string().min(2, {
-      message: "Campo obligatorio",
-    }),
-    id: z.string().min(2, {
-      message: "Campo obligatorio",
-    }),
-    dob: z.date({
-      required_error: "Campo obligatorio",
-    }),
-    relation: z
-      .enum(["option1", "option2", ""], {
-        message: "Campo obligatorio",
-      })
-      .refine((val) => val !== "", {
-        message: "Debes seleccionar una opción",
-      }),
-    address: z.string().min(2, {
-      message: "Campo obligatorio",
-    }),
-    job: z.string().min(2, {
-      message: "Campo obligatorio",
-    }),
-    phone: z.string().min(2, {
-      message: "Campo obligatorio",
-    }),
-    emergency_contact: z.string().min(2, {
-      message: "Campo obligatorio",
-    }),
-    email: z.string().email({
-      message: "Correo electrónico inválido",
-    }),
-    password: z.string().min(2, {
-      message: "Campo obligatorio",
-    }),
-    confirm_password: z.string().min(2, {
-      message: "Campo obligatorio",
-    }),
+    address: z.string().min(2, ERROR_MESSAGES.REQUIRED),
+    job: z.string().min(2, ERROR_MESSAGES.REQUIRED),
+    phone: z
+      .string()
+      .length(9, ERROR_MESSAGES.PHONE_LENGTH)
+      .regex(/^\d+$/, ERROR_MESSAGES.NUMERIC),
+    emergency_contact: z
+      .string()
+      .length(9, ERROR_MESSAGES.PHONE_LENGTH)
+      .regex(/^\d+$/, ERROR_MESSAGES.NUMERIC),
+    email: z.string().email(ERROR_MESSAGES.EMAIL),
+    password: z.string().min(8, ERROR_MESSAGES.STRING_LENGTH(8, 50)),
+    confirm_password: z.string(),
   })
-  .refine(
-    (data) => {
-      return data.password === data.confirm_password;
-    },
-    {
-      message: "Las contraseñas no coinciden",
-      path: ["confirm_password"],
-    }
-  );
+  .refine((data) => data.password === data.confirm_password, {
+    message: ERROR_MESSAGES.PASSWORD_MISMATCH,
+    path: ["confirm_password"],
+  });
 
 const stepFields: Record<number, (keyof z.infer<typeof FormSchema>)[]> = {
   1: ["name", "lastname", "id", "dob", "relation"],
   2: ["address", "job", "phone", "emergency_contact"],
+  3: ["email", "password", "confirm_password"],
 };
 
 const stepTitles: { [key: number]: string } = {
@@ -125,7 +139,6 @@ export function RegisterForm() {
       lastname: "",
       id: "",
       dob: undefined,
-      relation: undefined,
       address: "",
       job: "",
       phone: "",
@@ -137,21 +150,14 @@ export function RegisterForm() {
   });
 
   const nextStep = async () => {
-    const currentFields = stepFields[step];
-    if (!currentFields) return;
-
-    if (currentFields) {
-      const isValid = await form.trigger(currentFields);
-      console.log(isValid);
-
-      if (!isValid) return;
-    }
-
-    setStep(step + 1);
+    const fields = stepFields[step];
+    const isValid = await form.trigger(fields);
+    if (isValid) setStep((prev) => prev + 1);
   };
 
   const prevStep = () => {
-    setStep(step - 1);
+    form.clearErrors(stepFields[step]);
+    setStep((prev) => prev - 1);
   };
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -252,7 +258,7 @@ export function RegisterForm() {
                             <Calendar
                               captionLayout="dropdown-buttons"
                               fromYear={1980}
-                              toYear={2010}
+                              toYear={new Date().getFullYear() - 18}
                               mode="single"
                               selected={field.value ?? null}
                               onSelect={field.onChange}
@@ -277,12 +283,12 @@ export function RegisterForm() {
                       >
                         <FormControl>
                           <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Seleccione una opción" />
+                            <SelectValue placeholder="Seleccione" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="option1">Padre/Madre</SelectItem>
-                          <SelectItem value="option2">Tutor Legal</SelectItem>
+                          <SelectItem value="parent">Padre / Madre</SelectItem>
+                          <SelectItem value="tutor">Tutor Legal</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -311,7 +317,7 @@ export function RegisterForm() {
                   name="job"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Ocupación/profesión</FormLabel>
+                      <FormLabel>Ocupación / Profesión</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -324,7 +330,7 @@ export function RegisterForm() {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Teléfono/WhatsApp</FormLabel>
+                      <FormLabel>Teléfono / WhatsApp</FormLabel>
                       <FormControl>
                         <Input {...field} maxLength={9} />
                       </FormControl>

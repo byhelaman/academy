@@ -5,20 +5,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { EnrollmentForm } from "./forms/enrollment";
+import Link from "next/link";
 
-export default function DashboardPage() {
+export default function EnrollmentPage() {
   return (
     <Card className="shadow-none">
       <CardHeader className="border-dashed border-b">
-        <CardTitle>Panel de Administración</CardTitle>
+        <CardTitle>Proceso de Matrícula</CardTitle>
         <CardDescription>
-          Aquí está el resumen de su proceso de matrícula
+          Gestiona el proceso de matrícula actual
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[400px] flex items-center justify-center bg-muted/20 rounded-md">
-          <p className="text-muted-foreground">Gráfico de barras</p>
-        </div>
+        <EnrollmentForm />
       </CardContent>
     </Card>
   );
