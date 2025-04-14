@@ -52,7 +52,7 @@ const items = [
 export default function Faq() {
   return (
     <div className="space-y-4 w-full py-8" id="faq">
-      <h2 className="text-xl font-semibold text-center tracking-tight">
+      <h2 className="text-2xl font-semibold text-center tracking-tight">
         Todo lo que necesitas saber
       </h2>
       <Accordion

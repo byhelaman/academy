@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function DashboardPage() {
+export default function UserPage() {
   return (
     <Card className="shadow-none">
       <CardHeader className="border-dashed border-b">

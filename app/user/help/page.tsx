@@ -34,10 +34,12 @@ export default function HelpPage() {
             </TabsList>
             <ScrollBar orientation="horizontal" className="h-1.5" />
           </ScrollArea>
-          <TabsContent value="faq">@faq</TabsContent>
-          <TabsContent value="docs">@docs</TabsContent>
-          <TabsContent value="guides">@guides</TabsContent>
-          <TabsContent value="contact">@contact</TabsContent>
+          <TabsContent value="faq">@TODO: FAQ</TabsContent>
+          <TabsContent value="docs">@TODO: Documentos</TabsContent>
+          <TabsContent value="guides">@TODO: Guías de Uso</TabsContent>
+          <TabsContent value="contact">
+            @TODO: Información de Contacto
+          </TabsContent>
         </Tabs>
       </CardContent>
     </Card>

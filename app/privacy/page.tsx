@@ -47,7 +47,7 @@ const data = {
 export default function PrivacyPage() {
   return (
     <div className="grid items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-archivo-sans)]">
-      <div className="flex flex-col gap-16 max-w-[648px]">
+      <div className="flex flex-col gap-16 max-w-3xl">
         <div className="mt-8">
           <div className="mb-16">
             <Link href="/">

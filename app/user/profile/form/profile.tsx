@@ -158,7 +158,11 @@ export function ProfileForm() {
                     <FormItem>
                       <FormLabel>Nombres</FormLabel>
                       <FormControl>
-                        <Input {...field} disabled={!isEditing} />
+                        <Input
+                          {...field}
+                          className="read-only:bg-muted"
+                          readOnly
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -171,7 +175,11 @@ export function ProfileForm() {
                     <FormItem>
                       <FormLabel>Apellidos</FormLabel>
                       <FormControl>
-                        <Input {...field} disabled={!isEditing} />
+                        <Input
+                          {...field}
+                          className="read-only:bg-muted"
+                          readOnly
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -186,7 +194,11 @@ export function ProfileForm() {
                     <FormItem>
                       <FormLabel>DNI / Documento de Identidad</FormLabel>
                       <FormControl>
-                        <Input {...field} maxLength={8} disabled={!isEditing} />
+                        <Input
+                          {...field}
+                          className="read-only:bg-muted"
+                          readOnly
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -197,22 +209,15 @@ export function ProfileForm() {
                   name="relation"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Relación con el Estudiante</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value == null ? "option1" : field.value}
-                        disabled={!isEditing}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Seleccione una opción" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="option1">Padre/Madre</SelectItem>
-                          <SelectItem value="option2">Tutor Legal</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <FormLabel>Tipo de Usuario</FormLabel>
+                      {/* <FormLabel>Relación con el Estudiante</FormLabel> */}
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className="read-only:bg-muted"
+                          readOnly
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}

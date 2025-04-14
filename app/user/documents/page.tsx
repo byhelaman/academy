@@ -10,9 +10,9 @@ export default function DocumentsPage() {
   return (
     <Card className="shadow-none">
       <CardHeader className="border-dashed border-b">
-        <CardTitle>Documentación</CardTitle>
+        <CardTitle>Documentos</CardTitle>
         <CardDescription>
-          Gestiona los documentos requeridos para el proceso de matrícula
+          Suba y gestione los documentos requeridos para la matrícula.
         </CardDescription>
       </CardHeader>
       <CardContent>

@@ -12,7 +12,7 @@ export default function StudentsPage() {
       <CardHeader className="border-dashed border-b">
         <CardTitle>Gestión de Estudiantes</CardTitle>
         <CardDescription>
-          Administra la información de los estudiantes registrados
+          Gestione la información de sus estudiantes
         </CardDescription>
       </CardHeader>
       <CardContent>

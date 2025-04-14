@@ -145,7 +145,7 @@ export function EnrollmentForm() {
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Está seguro?</AlertDialogTitle>
+                      <AlertDialogTitle>¿Está seguro?</AlertDialogTitle>
                       <AlertDialogDescription>
                         Si retrocede ahora, se perderán los archivos que ha
                         subido.

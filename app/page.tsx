@@ -37,8 +37,32 @@ const data = {
 export default function Home() {
   return (
     <div className="grid items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-archivo-sans)]">
-      <div className="flex flex-col gap-8 items-center max-w-[648px]">
+      <div className="flex flex-col gap-8 items-center max-w-3xl">
         <div className="flex flex-col gap-6 py-8 w-full">
+          <div className="flex gap-2 justify-center w-full py-8">
+            <Badge variant="secondary">v0.1 beta</Badge>
+          </div>
+          <div className="text-center space-y-5 sm:space-y-3 ">
+            <h1 className="text-5xl font-bold tracking-tight">
+              Matrícula rápida, fácil y segura!
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              Inscriba a sus hijos en minutos, sin complicaciones.
+            </p>
+          </div>
+          <div className="flex gap-4 items-center flex-col sm:flex-row m-auto pt-4">
+            <Link href="/register">
+              <Button>Comienza ahora</Button>
+            </Link>
+            <Link href="#faq">
+              <Button variant="outline">
+                Descubre cómo funciona
+                {/* <ArrowUpRight /> */}
+              </Button>
+            </Link>
+          </div>
+        </div>
+        {/* <div className="flex flex-col gap-6 py-8 w-full">
           <div className="flex gap-2 justify-center w-full py-8">
             <Badge variant="secondary">v0.1 beta</Badge>
           </div>
@@ -61,13 +85,13 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-        </div>
+        </div> */}
         <div className="space-y-6 w-full py-8 ">
           <div className="max-w-3xl text-center">
-            <h2 className="text-xl font-semibold tracking-tight">
+            <h2 className="text-2xl font-semibold tracking-tight">
               Proceso de Matrícula
             </h2>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-muted-foreground text-base">
               Tres simples pasos para completar tu matrícula
             </p>
           </div>
@@ -91,7 +115,7 @@ export default function Home() {
         </div>
         <Faq />
       </div>
-      <footer className="w-full flex flex-wrap items-center justify-center sm:justify-between text-sm max-w-[648px]">
+      <footer className="w-full flex flex-wrap items-center justify-center sm:justify-between text-sm max-w-3xl">
         <span className="text-muted-foreground">
           © 2025 Academy. Todos los derechos reservados.
         </span>
