@@ -146,8 +146,15 @@ export const FormSchema = z
     };
 
     // Validaciones condicionales
-    if (enrollmentMode === "newEnrollment" || enrollmentMode === "transfer") {
+    if (
+      level !== "secondary" &&
+      (enrollmentMode === "newEnrollment" || enrollmentMode === "transfer")
+    ) {
       if (!docs.birthCertificate) addValidation(["birthCertificate"]);
+      // if (!docs.studentPhoto) addValidation(["studentPhoto"]);
+    }
+
+    if (enrollmentMode === "newEnrollment" || enrollmentMode === "transfer") {
       if (!docs.studentPhoto) addValidation(["studentPhoto"]);
     }
 
@@ -155,7 +162,11 @@ export const FormSchema = z
       if (!docs.vaccinationCard) addValidation(["vaccinationCard"]);
     }
 
-    if (level === "preschool" && !docs.healthCertificate)
+    if (
+      level === "preschool" &&
+      enrollmentMode !== "reEnrollment" &&
+      !docs.healthCertificate
+    )
       addValidation(["healthCertificate"]);
 
     if (
@@ -184,11 +195,8 @@ export const FormSchema = z
     }
 
     if (
-      (enrollmentMode === "reEnrollment" ||
-        ((enrollmentMode === "transfer" ||
-          enrollmentMode === "newEnrollment") &&
-          ((level === "primary" && grade !== "grade1") ||
-            level === "secondary"))) &&
+      (enrollmentMode === "transfer" || enrollmentMode === "newEnrollment") &&
+      ((level === "primary" && grade !== "grade1") || level === "secondary") &&
       !docs.debtCertificate
     ) {
       addValidation(["debtCertificate"]);

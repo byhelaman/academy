@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { use, useEffect, useMemo } from "react";
 import Link from "next/link";
 import {
   UseFormReturn,
@@ -9,6 +9,8 @@ import {
 } from "react-hook-form";
 import {
   Check,
+  CircleCheck,
+  CircleCheckBig,
   CircleHelp,
   Info,
   SquareArrowOutUpRight,
@@ -48,6 +50,10 @@ export default function StepThree({ form }: StepThreeProps) {
   const selectedEnrollmentMode = form.watch("enrollmentMode");
   const selectedRelationship = form.watch("relationship");
 
+  useEffect(() => {
+    form.resetField("docs");
+  }, [selectedLevel, selectedGrade, selectedEnrollmentMode, form]);
+
   // Muestra los inputs según las condiciones establecidas.
   // IMPORTANTE: Si se modifica alguna condición, también debe actualizarse el schema de validación.
 
@@ -61,8 +67,9 @@ export default function StepThree({ form }: StepThreeProps) {
       name: "docs.birthCertificate",
       label: "Partida de Nacimiento (Original)",
       condition:
-        selectedEnrollmentMode === "newEnrollment" ||
-        selectedEnrollmentMode === "transfer",
+        selectedLevel !== "secondary" &&
+        (selectedEnrollmentMode === "newEnrollment" ||
+          selectedEnrollmentMode === "transfer"),
     },
     {
       name: "docs.studentPhoto",
@@ -119,10 +126,11 @@ export default function StepThree({ form }: StepThreeProps) {
       name: "docs.enrollmentForm",
       label: (
         <span className="flex items-center gap-1">
-          Ficha única de matrícula &#40;MINEDU&#41;
+          Ficha Única de matrícula &#40;FUM&#41;
           <InfoTooltip
-            title="Ficha única de matrícula (FUM)"
-            description="Documento oficial que contiene información sobre la matrícula del estudiante en una institución educativa."
+            title="Ficha Única de Matrícula"
+            description="Contiene los datos personales del estudiante y su familia, así como información sobre el colegio."
+            className="w-[286px]"
           />
         </span>
       ),
@@ -142,13 +150,12 @@ export default function StepThree({ form }: StepThreeProps) {
     },
     {
       name: "docs.debtCertificate",
-      label: "Constancia de no adeudo",
+      label: "Constancia de No Adeudo (Colegio anterior)",
       condition:
-        selectedEnrollmentMode === "reEnrollment" ||
-        ((selectedEnrollmentMode === "transfer" ||
+        (selectedEnrollmentMode === "transfer" ||
           selectedEnrollmentMode === "newEnrollment") &&
-          ((selectedLevel === "primary" && selectedGrade !== "grade1") ||
-            selectedLevel === "secondary")),
+        ((selectedLevel === "primary" && selectedGrade !== "grade1") ||
+          selectedLevel === "secondary"),
     },
     {
       name: "docs.internalRegulations",
@@ -185,6 +192,7 @@ export default function StepThree({ form }: StepThreeProps) {
                 accept=".pdf,.jpg,.jpeg,.png"
                 onChange={(e) => field.onChange(e.target.files?.[0] || null)}
                 key={value?.name}
+                className="pe-3 file:pe-3 file:me-3 file:border-0 file:border-e file:border-input file:h-full"
               />
             </FormControl>
             {value && (

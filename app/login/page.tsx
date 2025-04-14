@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 
 import { ChevronLeft } from "lucide-react";
@@ -19,13 +21,13 @@ export default function LoginPage() {
         <div>
           <LoginForm />
           <div className="pt-4 text-balance text-center text-xs text-muted-foreground">
-            <a href="#" className="underline">
-              Términos de servicio
-            </a>{" "}
-            y{" "}
-            <a href="#" className="underline">
-              Política de privacidad
-            </a>
+            <Link href="/terms" className="underline">
+              Términos y Condiciones
+            </Link>
+            <span className="mx-1 inline-block">|</span>
+            <Link href="/privacy" className="underline">
+              Política de Privacidad
+            </Link>
             .
           </div>
         </div>

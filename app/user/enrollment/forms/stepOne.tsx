@@ -21,34 +21,12 @@ import { Label } from "@/components/ui/label";
 import { EnrollmentFormMethods } from "./utlis";
 
 // Tipos y constantes reutilizables
-type LevelOption = {
-  value: "preschool" | "primary" | "secondary";
-  label: string;
-  icon: any;
-};
-
-const LEVEL_OPTIONS: LevelOption[] = [
-  { value: "preschool", label: "Inicial", icon: SwatchBook },
-  { value: "primary", label: "Primaria", icon: Brush },
-  { value: "secondary", label: "Secundaria", icon: Eraser },
-];
-
-const VALID_GRADES = {
-  preschool: ["aula3", "aula4", "aula5"],
-  primary: ["grade1", "grade2", "grade3", "grade4", "grade5", "grade6"],
-  secondary: ["grade1", "grade2", "grade3", "grade4", "grade5"],
-};
-
-const SHIFT_OPTIONS = [
-  { value: "morning", label: "Mañana (07:30 - 12:30)" },
-  { value: "afternoon", label: "Tarde (13:00 - 18:30)" },
-];
-
-const EDUCATIONAL_ORIGIN_OPTIONS = [
-  { value: "newEnrollment", label: "Nuevo ingreso" },
-  { value: "transfer", label: "Traslado de otra institución" },
-  { value: "reEnrollment", label: "Ratificación de matrícula" },
-];
+import {
+  LEVEL_OPTIONS,
+  SHIFT_OPTIONS,
+  GRADE_OPTIONS,
+  ENROLLMENT_MODE_OPTIONS,
+} from "./constants";
 
 interface StepOneProps {
   form: EnrollmentFormMethods;
@@ -119,10 +97,10 @@ export default function StepOne({ form }: StepOneProps) {
           // Paso 2: Filtrar opciones según el grado
           const filteredOptions =
             selectedGrade === "aula3"
-              ? EDUCATIONAL_ORIGIN_OPTIONS.filter(
+              ? ENROLLMENT_MODE_OPTIONS.filter(
                   (opt) => opt.value === "newEnrollment"
                 )
-              : EDUCATIONAL_ORIGIN_OPTIONS;
+              : ENROLLMENT_MODE_OPTIONS;
 
           return (
             <SelectField
@@ -186,42 +164,18 @@ const SelectField = ({
   </FormItem>
 );
 
-// Componente para selección de grado optimizado
-const GradeSelect = ({
-  form,
-  selectedLevel,
-}: {
+interface GradeSelectProps {
   form: EnrollmentFormMethods;
   selectedLevel: "preschool" | "primary" | "secondary";
-}) => {
-  const gradeOptions = useMemo(
-    () => ({
-      preschool: [
-        { value: "aula3", label: "Aula (3 años)" },
-        { value: "aula4", label: "Aula (4 años)" },
-        { value: "aula5", label: "Aula (5 años)" },
-      ],
-      primary: Array.from({ length: 6 }, (_, i) => ({
-        value: `grade${i + 1}`,
-        label: `${i + 1}° Grado`,
-      })),
-      secondary: Array.from({ length: 5 }, (_, i) => ({
-        value: `grade${i + 1}`,
-        label: `${i + 1}° Grado`,
-      })),
-    }),
-    []
-  );
+}
 
+const GradeSelect = ({ form, selectedLevel }: GradeSelectProps) => {
   useEffect(() => {
     const currentGrade = form.getValues("grade");
-    if (
-      selectedLevel &&
-      currentGrade &&
-      !VALID_GRADES[selectedLevel]?.includes(currentGrade)
-    ) {
+    const validGrades = GRADE_OPTIONS[selectedLevel].map((opt) => opt.value);
+
+    if (selectedLevel && currentGrade && !validGrades.includes(currentGrade)) {
       form.setValue("grade", "");
-      // form.trigger("grade");
     }
   }, [selectedLevel, form]);
 
@@ -243,7 +197,7 @@ const GradeSelect = ({
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {gradeOptions[selectedLevel]?.map((option) => (
+              {GRADE_OPTIONS[selectedLevel]?.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>

@@ -12,8 +12,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import StepOne from "./stepOne";
 import StepTwo from "./stepTwo";
 import StepThree from "./stepThree";
+import StepFour from "./stepFour";
 
 import { FormSchema, EnrollmentFormType } from "./utlis";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const stepFields: Record<number, (keyof EnrollmentFormType)[]> = {
   1: ["level", "grade", "shift", "enrollmentMode"],
@@ -70,6 +83,7 @@ export function EnrollmentForm() {
 
   const prevStep = () => {
     form.clearErrors(stepFields[step]);
+    form.resetField("docs");
     setStep((prev) => prev - 1);
   };
 
@@ -86,6 +100,7 @@ export function EnrollmentForm() {
     });
 
     // form.reset();
+    form.resetField("docs");
     setStep(1);
   };
 
@@ -100,27 +115,49 @@ export function EnrollmentForm() {
             {step === 1 && <StepOne form={form} />}
             {step === 2 && <StepTwo form={form} />}
             {step === 3 && <StepThree form={form} />}
-            {step === 4 && (
-              <div className="flex flex-col gap-2">
-                <span>Información de Matrícula</span>
-                <span>Información del Estudiante</span>
-                <span>Información del Padre / Madre / Tutor</span>
-                <span>Documentos Requeridos</span>
-              </div>
-            )}
+            {step === 4 && <StepFour form={form} />}
 
             <div className="w-full flex justify-between">
-              <Button
-                variant="outline"
-                type="button"
-                onClick={prevStep}
-                disabled={step === 1}
-              >
-                Anterior
-              </Button>
+              {step > 2 ? (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline">Anterior</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Está seguro?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Si retrocede ahora, se perderán los archivos que ha
+                        subido.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={prevStep}>
+                        Continuar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              ) : (
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={prevStep}
+                  disabled={step === 1}
+                >
+                  Anterior
+                </Button>
+              )}
 
               {step < 4 ? (
-                <Button type="button" onClick={nextStep}>
+                <Button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    nextStep();
+                  }}
+                >
                   Siguiente
                 </Button>
               ) : (

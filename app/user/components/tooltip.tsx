@@ -4,6 +4,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 import { CircleHelp } from "lucide-react";
 
@@ -11,12 +12,14 @@ export interface InfoTooltipProps {
   title?: string;
   description?: React.ReactNode;
   icon?: any;
+  className?: string;
 }
 
 export function InfoTooltip({
   title,
   description,
   icon: Icon = CircleHelp,
+  className,
 }: InfoTooltipProps) {
   return (
     <Tooltip>
@@ -31,7 +34,7 @@ export function InfoTooltip({
           <Icon size={16} />
         </Button>
       </TooltipTrigger>
-      <TooltipContent className="py-3 max-w-[320px]">
+      <TooltipContent className={cn("py-3 max-w-[320px]", className)}>
         <div className="space-y-1">
           {title && <p className="text-[13px] font-medium">{title}</p>}
           <p className="text-muted-foreground text-xs">{description}</p>
