@@ -6,7 +6,7 @@ const ACCEPTED_FILE_TYPES = ["image/jpeg", "image/png", "application/pdf"];
 
 // Mensajes estandarizados
 const ERROR_MESSAGES = {
-  REQUIRED: "Campo requerido",
+  REQUIRED: "Este campo es obligatorio",
   INVALID_TYPE: "Tipo de archivo no válido",
   MAX_SIZE: "El tamaño máximo permitido es 5MB",
   DATE_RANGE: "La edad debe estar entre 3 y 18 años",
@@ -103,13 +103,13 @@ export const FormSchema = z
     // Paso 2 - Información del estudiante
     name: z
       .string()
-      .min(2, ERROR_MESSAGES.STRING_LENGTH(2, 50))
-      .max(50, ERROR_MESSAGES.STRING_LENGTH(2, 50))
+      .min(2, ERROR_MESSAGES.REQUIRED)
+      .max(50, ERROR_MESSAGES.REQUIRED)
       .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/, ERROR_MESSAGES.LETTERS),
     lastname: z
       .string()
-      .min(2, ERROR_MESSAGES.STRING_LENGTH(2, 50))
-      .max(50, ERROR_MESSAGES.STRING_LENGTH(2, 50))
+      .min(2, ERROR_MESSAGES.REQUIRED)
+      .max(50, ERROR_MESSAGES.REQUIRED)
       .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/, ERROR_MESSAGES.LETTERS),
     id: z
       .string()

@@ -68,7 +68,7 @@ export default function StepFour({ form }: StepOneProps) {
     <div className="space-y-6">
       <Alert className="mb-6">
         <CircleCheckBig className="h-4 w-4" />
-        <AlertTitle>¡Todo listo para enviar!</AlertTitle>
+        <AlertTitle>Listo para enviar!</AlertTitle>
         <AlertDescription>
           Revise que toda la información sea correcta antes de confirmar.
         </AlertDescription>

@@ -33,11 +33,11 @@ import { InputPassword } from "./components/password";
 const FormSchema = z.object({
   email: z
     .string()
-    .min(1, "El correo electrónico es requerido")
+    .min(1, "Este campo es obligatorio")
     .email("Correo electrónico inválido"),
   password: z
     .string()
-    .min(1, "La contraseña es requerida")
+    .min(1, "Este campo es obligatorio")
     .max(50, "Contraseña inválida"),
 });
 

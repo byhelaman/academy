@@ -117,11 +117,31 @@ export function EnrollmentForm() {
             {step === 3 && <StepThree form={form} />}
             {step === 4 && <StepFour form={form} />}
 
+            {/* si no se ha subido ningun archivo el button debe ser solo anterior y no alert */}
+            {/* osea si docs */}
+
             <div className="w-full flex justify-between">
               {step > 2 ? (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="outline">Anterior</Button>
+                    <Button
+                      variant="outline"
+                      type="button"
+                      onClick={(e) => {
+                        // Verificar si hay archivos subidos
+                        const docs = form.getValues("docs");
+                        const hasFiles = Object.values(docs).some(
+                          (file) => file instanceof File
+                        );
+
+                        if (!hasFiles) {
+                          e.preventDefault();
+                          prevStep();
+                        }
+                      }}
+                    >
+                      Anterior
+                    </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>

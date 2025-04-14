@@ -50,7 +50,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { InputPassword } from "../login/components/password";
 
 const ERROR_MESSAGES = {
-  REQUIRED: "Campo requerido",
+  REQUIRED: "Este campo es obligatorio",
   STRING_LENGTH: (min: number, max: number) =>
     `Debe tener entre ${min} y ${max} caracteres`,
   NUMERIC: "Solo se permiten números",
@@ -59,7 +59,7 @@ const ERROR_MESSAGES = {
   DNI_LENGTH: "El DNI debe tener 8 dígitos",
   EMAIL: "Correo electrónico inválido",
   PASSWORD_MISMATCH: "Las contraseñas no coinciden",
-  DATE_RANGE: "Debe ser mayor de 18 años",
+  DATE_RANGE: "Debe ser mayor de edad",
   PHONE_LENGTH: "Debe tener 9 dígitos",
 };
 
@@ -71,20 +71,20 @@ const validateDate = (date: Date) => {
     today.getDate()
   );
 
-  return date >= minDate;
+  return date <= minDate;
 };
 
 const FormSchema = z
   .object({
     name: z
       .string()
-      .min(2, ERROR_MESSAGES.STRING_LENGTH(2, 50))
-      .max(50, ERROR_MESSAGES.STRING_LENGTH(2, 50))
+      .min(2, ERROR_MESSAGES.REQUIRED)
+      .max(50, ERROR_MESSAGES.REQUIRED)
       .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/, ERROR_MESSAGES.LETTERS),
     lastname: z
       .string()
-      .min(2, ERROR_MESSAGES.STRING_LENGTH(2, 50))
-      .max(50, ERROR_MESSAGES.STRING_LENGTH(2, 50))
+      .min(2, ERROR_MESSAGES.REQUIRED)
+      .max(50, ERROR_MESSAGES.REQUIRED)
       .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/, ERROR_MESSAGES.LETTERS),
     id: z
       .string()
@@ -100,11 +100,11 @@ const FormSchema = z
     job: z.string().min(2, ERROR_MESSAGES.REQUIRED),
     phone: z
       .string()
-      .length(9, ERROR_MESSAGES.PHONE_LENGTH)
+      .length(9, ERROR_MESSAGES.REQUIRED)
       .regex(/^\d+$/, ERROR_MESSAGES.NUMERIC),
     emergency_contact: z
       .string()
-      .length(9, ERROR_MESSAGES.PHONE_LENGTH)
+      .length(9, ERROR_MESSAGES.REQUIRED)
       .regex(/^\d+$/, ERROR_MESSAGES.NUMERIC),
     email: z.string().email(ERROR_MESSAGES.EMAIL),
     password: z.string().min(8, ERROR_MESSAGES.STRING_LENGTH(8, 50)),
@@ -410,7 +410,6 @@ export function RegisterForm() {
                     prevStep();
                   }}
                 >
-                  <ChevronLeft />
                   Anterior
                 </Button>
               ) : null}
@@ -424,7 +423,6 @@ export function RegisterForm() {
                   }}
                 >
                   Siguiente
-                  <ChevronRight />
                 </Button>
               ) : (
                 <Button type="submit">Registrarse</Button>
